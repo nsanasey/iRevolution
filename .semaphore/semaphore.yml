@@ -5,15 +5,24 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Test
+  - name: ' Install dependencies'
+    dependencies: []
     task:
       jobs:
-        - name: Get nodes
+        - name: bundle install
           commands:
             - checkout
-            - kubectl get nodes
-      secrets:
-        - name: do-k8s
-      env_vars:
-        - name: KUBECONFIG
-          value: /home/semaphore/.kube/dok8s.yaml
+            - cache restore
+            - bundle install --deployment --path vendor/bundle
+            - cache store
+  - name: Tests
+    dependencies:
+      - ' Install dependencies'
+    task:
+      jobs:
+        - name: rspec
+          commands:
+            - 'checkout '
+            - cache restore
+            - bundle install --deployment --path vendor/bundle
+            - bundle exec rspec

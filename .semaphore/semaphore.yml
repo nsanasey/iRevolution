@@ -13,6 +13,7 @@ blocks:
           commands:
             - checkout
             - kubectl get nodes
+            - kubectl get services
       env_vars:
         - name: KUBECONFIG
           value: /home/semaphore/.kube/dok8s.yaml
